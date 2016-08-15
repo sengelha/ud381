@@ -13,6 +13,7 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
+import udacity.storm.spout.RandomSentenceSpout;
 
 import java.util.Map;
 
@@ -118,9 +119,10 @@ public class ReporterExclamationTopology {
     //********* BEGIN stage2 exercise part 2-of-2 ***********
     // attach the word spout to the topology - parallelism of 10
     builder.setSpout("word", new TestWordSpout(), 10);
+    builder.setSpout("rand-sentence", new RandomSentenceSpout(), 10);
 
     // attach the exclamation bolt to the topology - parallelism of 3
-    builder.setBolt("exclaim1", new ExclamationBolt(), 3).shuffleGrouping("word");
+    builder.setBolt("exclaim1", new ExclamationBolt(), 3).shuffleGrouping("rand-sentence");
 
     // attach another exclamation bolt to the topology - parallelism of 2
     builder.setBolt("exclaim2", new ExclamationBolt(), 2).shuffleGrouping("exclaim1");
